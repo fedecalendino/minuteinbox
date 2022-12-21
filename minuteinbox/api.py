@@ -1,10 +1,12 @@
 from typing import Iterator, Tuple
 from uuid import uuid4
 
+from bs4 import BeautifulSoup
 import requests
+from requests import Response
 
 
-def _get(service: str, token: str, address: str = None) -> dict:
+def _get(service: str, token: str, address: str = None) -> Response:
     if not address:
         cookie = f"PHPSESSID={token}"
     else:
@@ -24,18 +26,24 @@ def _get(service: str, token: str, address: str = None) -> dict:
     )
 
     response.encoding = "utf-8-sig"
-    return response.json()
+    return response
 
 
 def inbox() -> Tuple[str, str]:
     token = str(uuid4()).replace("-", "")
 
-    json = _get("index/index", token)
+    json = _get("index/index", token).json()
     return json["email"], token
 
 
+def content(address: str, token: str, id: str) -> str:
+    response = _get(f"email/id/{id}", token, address)
+
+    return response.content
+
+
 def refresh(address: str, token: str) -> Iterator[dict]:
-    json = _get("index/refresh", token, address)
+    json = _get("index/refresh", token, address).json()
 
     for mail in json:
         sender_name, sender_address = mail["od"].split(" <")
@@ -44,7 +52,7 @@ def refresh(address: str, token: str) -> Iterator[dict]:
             "id": mail["id"],
             "sent_at": mail["kdy"],
             "subject": mail["predmet"],
-            "content": mail["akce"],
+            "content": content(address, token, mail["id"]),
             "sender": {
                 "name": sender_name,
                 "address": sender_address[:-1],
@@ -53,7 +61,7 @@ def refresh(address: str, token: str) -> Iterator[dict]:
 
 
 def times(address: str, token: str) -> dict:
-    json = _get("index/zivot", token, address)
+    json = _get("index/zivot", token, address).json()
 
     return {
         "created_at": json["ted"],
