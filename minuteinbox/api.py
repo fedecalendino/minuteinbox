@@ -38,7 +38,7 @@ def inbox() -> Tuple[str, str]:
 def content(address: str, token: str, id: str) -> str:
     response = _get(f"email/id/{id}", token, address)
 
-    return response.content
+    return response.text
 
 
 def refresh(address: str, token: str) -> Iterator[dict]:
