@@ -1,7 +1,6 @@
 from typing import Iterator, Tuple
 from uuid import uuid4
 
-from bs4 import BeautifulSoup
 import requests
 from requests import Response
 
