@@ -50,12 +50,13 @@ def refresh(address: str, token: str) -> Iterator[dict]:
         yield {
             "id": mail["id"],
             "sent_at": mail["kdy"],
-            "subject": mail["predmet"],
-            "content": content(address, token, mail["id"]),
+            "is_new": mail["precteno"] == "new",
             "sender": {
                 "name": sender_name,
                 "address": sender_address[:-1],
             },
+            "subject": mail["predmet"],
+            "content": content(address, token, mail["id"]),
         }
 
 

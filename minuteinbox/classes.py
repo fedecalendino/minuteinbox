@@ -14,9 +14,10 @@ class Mail:
     def __init__(self, **data):
         self.id: str = data["id"]
         self.sent_at: str = data["sent_at"]
+        self.is_new: bool = data["is_new"]
+        self.sender: Account = Account(**data["sender"])
         self.subject: str = data["subject"]
         self.content: str = data["content"]
-        self.sender: Account = Account(**data["sender"])
 
 
 class Inbox:
