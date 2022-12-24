@@ -71,3 +71,7 @@ def times(address: str, token: str) -> dict:
 
 def extend(address: str, token: str, seconds: int) -> dict:
     _get(f"expirace/{seconds}", token, address)
+
+
+def delete(address: str, token: str) -> dict:
+    _get("delete", token, address)

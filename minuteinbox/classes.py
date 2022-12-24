@@ -42,9 +42,6 @@ class Inbox:
     def extend_1d(self):
         api.extend(self.address, self.token, seconds=86400)
 
-    def extend_1w(self):
-        api.extend(self.address, self.token, seconds=604800)
-
     @property
     def expires_in(self):
         times = api.times(self.address, self.token)
@@ -56,3 +53,6 @@ class Inbox:
         expires_at = datetime.strptime(times["expires_at"], "%Y-%m-%d %H:%M:%S")
 
         return (expires_at - created_at).seconds
+
+    def delete(self):
+        api.delete(self.address, self.token)
